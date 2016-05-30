@@ -30,18 +30,19 @@ public class ProgramGrid {
 		// Create a new Transform Group and apply a transformationss
 		TransformGroup nodeTrans = new TransformGroup();
 		Vector3f vector = null;
+		float xdif = (xdim % 2 == 0) ? (sidelength * (xdim/2 - 1)) : (sidelength * ((float)xdim - 2) / 2);
+		float ydif = (ydim % 2 == 0) ? (sidelength * (ydim/2 - 1)) : (sidelength * ((float)ydim - 2) / 2);
+		float zdif = (zdim % 2 == 0) ? (sidelength * (zdim/2 - 1)) : (sidelength * ((float)zdim - 2) / 2);
+
 		switch(plane){
 			case 0:
-				float xdif = (xdim % 2 == 0) ? (sidelength * (xdim/2 - 1)) : (sidelength * ((float)xdim - 2) / 2);
-				vector = new Vector3f(pos1 * sidelength - xdif, pos2 * sidelength - xdif, 0);				
+				vector = new Vector3f(pos1 * sidelength - xdif, pos2 * sidelength - ydif, 0);
 				break;
 			case 1:
-				float ydif = (ydim % 2 == 0) ? (sidelength * (ydim/2 - 1)) : (sidelength * ((float)ydim - 2) / 2);
-				vector = new Vector3f(0, pos1 * sidelength - ydif, pos2 * sidelength - ydif);
+				vector = new Vector3f(0, pos1 * sidelength - ydif, pos2 * sidelength - zdif);
 				break;
 			case 2:
-				float zdif = (zdim % 2 == 0) ? (sidelength * (zdim/2 - 1)) : (sidelength * ((float)zdim - 2) / 2);
-				vector = new Vector3f(pos1 * sidelength - zdif, 0, pos2 * sidelength - zdif);
+				vector = new Vector3f(pos1 * sidelength - xdif, 0, pos2 * sidelength - zdif);
 				break;
 		}
 		Transform3D transform = new Transform3D();
@@ -53,13 +54,13 @@ public class ProgramGrid {
 		// Add the new cube to the group, and the new group to the root
 		switch(plane){
 			case 0:
-				nodeTrans.addChild(new Box(linesize, linesize, sidelength * (float)xdim / 2, a));
+				nodeTrans.addChild(new Box(linesize, linesize, sidelength * (float)zdim / 2, a));
 				break;
 			case 1:
-				nodeTrans.addChild(new Box(sidelength * (float)ydim / 2, linesize, linesize, a));
+				nodeTrans.addChild(new Box(sidelength * (float)xdim / 2, linesize, linesize, a));
 				break;
 			case 2:
-				nodeTrans.addChild(new Box(linesize, sidelength * (float)zdim / 2, linesize, a));
+				nodeTrans.addChild(new Box(linesize, sidelength * (float)ydim / 2, linesize, a));
 				break;
 		}
 		return nodeTrans;

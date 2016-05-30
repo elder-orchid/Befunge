@@ -28,7 +28,7 @@ public class Screen extends JFrame {
 		universe.getViewingPlatform().setNominalViewingTransform();
 
 		// Create and set up the Program Grid
-		ProgramGrid progGrid = new ProgramGrid(4, 4, 4, 0.2f, "A");
+		ProgramGrid progGrid = new ProgramGrid(1, 1, 2, 0.2f, "A");
 
 		// Get the content branch from the Program Grid and add it to the universe
 		BranchGroup scene = progGrid.getBranchGroup();
