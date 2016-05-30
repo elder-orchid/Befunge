@@ -26,19 +26,22 @@ public class ProgramGrid {
 	}
 	
 	private TransformGroup drawOrthogonalLine(int plane, float pos1, float pos2, Appearance a){
-		//plane 1=XY, plane 2=YZ, plane 3=XZ
+		// plane 1=XY, plane 2=YZ, plane 3=XZ
 		// Create a new Transform Group and apply a transformationss
 		TransformGroup nodeTrans = new TransformGroup();
 		Vector3f vector = null;
 		switch(plane){
 			case 0:
-				vector = new Vector3f(pos1 * sidelength, pos2 * sidelength, 0);				
+				float xdif = (xdim % 2 == 0) ? 0 : (sidelength / 2);
+				vector = new Vector3f(pos1 * sidelength - xdif, pos2 * sidelength - xdif, 0);				
 				break;
 			case 1:
-				vector = new Vector3f(0, pos1 * sidelength, pos2 * sidelength);
+				float ydif = (ydim % 2 == 0) ? 0 : (sidelength / 2);
+				vector = new Vector3f(0, pos1 * sidelength - ydif, pos2 * sidelength - ydif);
 				break;
 			case 2:
-				vector = new Vector3f(pos1 * sidelength, 0, pos2 * sidelength);
+				float zdif = (zdim % 2 == 0) ? 0 : (sidelength / 2);
+				vector = new Vector3f(pos1 * sidelength - zdif, 0, pos2 * sidelength - zdif);
 				break;
 		}
 		Transform3D transform = new Transform3D();
@@ -50,13 +53,13 @@ public class ProgramGrid {
 		// Add the new cube to the group, and the new group to the root
 		switch(plane){
 			case 0:
-				nodeTrans.addChild(new Box(linesize, linesize, sidelength, a));
+				nodeTrans.addChild(new Box(linesize, linesize, sidelength * (float)xdim / 2, a));
 				break;
 			case 1:
-				nodeTrans.addChild(new Box(sidelength, linesize, linesize, a));
+				nodeTrans.addChild(new Box(sidelength * (float)ydim / 2, linesize, linesize, a));
 				break;
 			case 2:
-				nodeTrans.addChild(new Box(linesize, sidelength, linesize, a));
+				nodeTrans.addChild(new Box(linesize, sidelength * (float)zdim / 2, linesize, a));
 				break;
 		}
 		return nodeTrans;
@@ -66,9 +69,6 @@ public class ProgramGrid {
 		// Create the root node of the content branch
 		BranchGroup nodeRoot = new BranchGroup();
 
-		// Create the TransformGroup node, which is writable to support
-		// animation, and add it under the root
-
 		// Render as a wireframe
 		Appearance ap = new Appearance();
 	    PolygonAttributes polyAttrbutes = new PolygonAttributes();
@@ -77,21 +77,21 @@ public class ProgramGrid {
 		
 	    // Given the dimensions, draw lines which go perpendicular to the planes
 	    
-	    //XY plane
+	    // XY plane
 	    for(int x = -1; x < xdim; x++) {
 		    for(int y = -1; y < ydim; y++) {
 				nodeRoot.addChild(drawOrthogonalLine(0, x, y, ap));
 		    }	    	
 	    }
 	    
-	    //YZ plane
+	    // YZ plane
 	    for(int y = -1; y < ydim; y++) {
 			for(int z = -1; z < zdim; z++) {
 				nodeRoot.addChild(drawOrthogonalLine(1, y, z, ap));
 			}
 	    }
 
-	    //XZ plane
+	    // XZ plane
 	    for(int x = -1; x < xdim; x++) {
 			for(int z = -1; z < zdim; z++) {
 				nodeRoot.addChild(drawOrthogonalLine(2, x, z, ap));

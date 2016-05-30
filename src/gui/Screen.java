@@ -43,15 +43,8 @@ public class Screen extends JFrame {
 
 		setVisible(true);
 		
-		// Add listener to exit when window is closed
-		addWindowStateListener(
-			new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
-					System.out.println("EXIT");
-					System.exit(0);
-				}
-			}
-	    );
+		// Exit when window is closed
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	// Entry main method to invoke the constructor on the event dispatcher thread
