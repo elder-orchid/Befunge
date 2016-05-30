@@ -3,8 +3,6 @@ import com.sun.j3d.utils.universe.*;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import javax.media.j3d.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 // This class is the main handler for screen content
@@ -28,7 +26,7 @@ public class Screen extends JFrame {
 		universe.getViewingPlatform().setNominalViewingTransform();
 
 		// Create and set up the Program Grid
-		ProgramGrid progGrid = new ProgramGrid(1, 1, 2, 0.2f, "A");
+		ProgramGrid progGrid = new ProgramGrid(1, 3, 5, 0.2f, "A");
 
 		// Get the content branch from the Program Grid and add it to the universe
 		BranchGroup scene = progGrid.getBranchGroup();
@@ -42,14 +40,13 @@ public class Screen extends JFrame {
 		// Nevermind...
 
 		setVisible(true);
-		
+
 		// Exit when window is closed
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	// Entry main method to invoke the constructor on the event dispatcher thread
 	public static void main(String args[]) {
-		// Invoke later my ass
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				new Screen();
