@@ -53,13 +53,13 @@ public class ProgramGrid {
 		// Add the new cube to the group, and the new group to the root
 		switch(plane){
 		case 0:
-			p[1] =  new Point3f(pos1 * sidelength + linesize, pos2 * sidelength + linesize, sidelength * (float)zdim);
+			p[1] =  new Point3f(pos1 * sidelength, pos2 * sidelength, sidelength * (float)zdim);
 			break;
 		case 1:
-			p[1] = new Point3f(sidelength * (float)xdim, pos1 * sidelength + linesize, pos2 * sidelength + linesize);
+			p[1] = new Point3f(sidelength * (float)xdim, pos1 * sidelength, pos2 * sidelength);
 			break;
 		case 2:
-			p[1] = new Point3f(pos1 * sidelength + linesize, sidelength * (float)ydim, pos2 * sidelength + linesize);
+			p[1] = new Point3f(pos1 * sidelength, sidelength * (float)ydim, pos2 * sidelength);
 			break;
 		}
 		l.setCoordinates(0, p);
@@ -141,7 +141,7 @@ public class ProgramGrid {
 		}
 		
 		// 0,0,0 is the farthest bottom left corner
-		nodeRoot.addChild(highlightBox(0, 0, 0, new Color3f(0.0f, 0.0f, 1.0f)));
+		nodeRoot.addChild(highlightBox(0, 1, 1, new Color3f(0.0f, 0.0f, 1.0f)));
 
 		// Compile to perform optimizations on this content branch.
 		nodeRoot.compile();
