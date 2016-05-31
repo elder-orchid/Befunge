@@ -22,11 +22,10 @@ public class ProgramGrid {
 	String program;
 
 	// Although only one string is used for input, it can be broken down based on the other dimensions.
-	public ProgramGrid(int xdim, int ydim, int zdim, float sidelength, String program) {
+	public ProgramGrid(int xdim, int ydim, int zdim, String program) {
 		this.xdim = xdim;
 		this.ydim = ydim;
 		this.zdim = zdim;
-		this.sidelength = sidelength;
 		this.program = program;
 	}
 
