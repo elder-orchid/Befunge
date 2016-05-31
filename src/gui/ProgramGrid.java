@@ -15,17 +15,16 @@ import com.sun.j3d.utils.geometry.Box;
 
 public class ProgramGrid {
 
-	final float linesize = 0.005f;
-
 	int xdim, ydim, zdim;
 	float sidelength;
 	String program;
 
 	// Although only one string is used for input, it can be broken down based on the other dimensions.
-	public ProgramGrid(int xdim, int ydim, int zdim, String program) {
+	public ProgramGrid(int xdim, int ydim, int zdim, float sidelength, String program) {
 		this.xdim = xdim;
 		this.ydim = ydim;
 		this.zdim = zdim;
+		this.sidelength = sidelength;
 		this.program = program;
 	}
 
