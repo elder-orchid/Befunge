@@ -34,11 +34,7 @@ public class Screen extends JFrame {
 
 		// Configure this JFrame
 		setSize(500, 500);
-
-		// Ha its like Befunge but like with 3D
-		setTitle("B3DUNGE");
-		// Nevermind...
-
+		setTitle("BEFUNGE");
 		setVisible(true);
 
 		// Exit when window is closed

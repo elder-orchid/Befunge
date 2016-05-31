@@ -29,10 +29,10 @@ public class ProgramGrid {
 	}
 
 	private TransformGroup drawOrthogonalLine(int plane, float pos1, float pos2, Appearance a){
+		int linesize = 5;
 		// plane 1=XY, plane 2=YZ, plane 3=XZ
 		// Create a new Transform Group and apply a transformation
 		TransformGroup nodeTrans = new TransformGroup();
-		Vector3f vector = null;
 		
 		LineArray l = new LineArray(2,LineArray.COORDINATES);
 		Point3f[] p = new Point3f[2];
