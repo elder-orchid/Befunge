@@ -1,11 +1,13 @@
 package gui;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
+import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.LineArray;
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -30,7 +32,7 @@ public class ProgramGrid {
 
 	private TransformGroup drawOrthogonalLine(int plane, float pos1, float pos2, Appearance a){
 		// plane 1=XY, plane 2=YZ, plane 3=XZ
-		// Create a new Transform Group and apply a transformationss
+		// Create a new Transform Group and apply a transformation
 		TransformGroup nodeTrans = new TransformGroup();
 		Vector3f vector = null;
 		
@@ -57,13 +59,52 @@ public class ProgramGrid {
 			p[1] = new Point3f(sidelength * (float)xdim, pos1 * sidelength + linesize, pos2 * sidelength + linesize);
 			break;
 		case 2:
-			p[1] = new Point3f(pos1 * sidelength+linesize, sidelength * (float)ydim, pos2 * sidelength + linesize);
+			p[1] = new Point3f(pos1 * sidelength + linesize, sidelength * (float)ydim, pos2 * sidelength + linesize);
 			break;
 		}
 		l.setCoordinates(0, p);
 		
 		nodeTrans.addChild(new Shape3D(l,a));
 		return nodeTrans;
+	}
+	
+	public TransformGroup highlightBox(int x, int y, int z, Color3f color) {
+
+		// Check to make sure that the coordinates are in the prism
+		if(x > xdim-1 || y > ydim-1 || z > zdim-1 || x < 0 || y < 0 || z < 0) {
+			System.out.println("Cannot highlight box (invalid coordinates)");
+			return null;
+		}
+
+		// Initialize the transform group
+		TransformGroup transformGroup = new TransformGroup();
+
+		// Set up coloring
+		ColoringAttributes ca = new ColoringAttributes(color, ColoringAttributes.NICEST);
+
+		// Set up appearance
+		Appearance ap = new Appearance();
+		ap.setColoringAttributes(ca);
+
+		// Set up box
+		Box b = new Box(.1f, .1f, .1f, ap);
+
+		// Set offset based on input
+		Vector3f vector = new Vector3f(
+				sidelength / 2 + sidelength * x,
+				sidelength / 2 + sidelength * y,
+				sidelength / 2 + sidelength * z);
+
+		// Add offset
+		Transform3D transform = new Transform3D();
+		transform.setTranslation(vector);
+
+		// Add the transform to the new group
+		transformGroup.setTransform(transform);
+
+		// Add box
+		transformGroup.addChild(b);
+		return transformGroup;
 	}
 
 	public BranchGroup getBranchGroup() {
@@ -98,6 +139,9 @@ public class ProgramGrid {
 				nodeRoot.addChild(drawOrthogonalLine(2, x, z, ap));
 			}
 		}
+		
+		// 0,0,0 is the farthest bottom left corner
+		nodeRoot.addChild(highlightBox(0, 0, 0, new Color3f(0.0f, 0.0f, 1.0f)));
 
 		// Compile to perform optimizations on this content branch.
 		nodeRoot.compile();
