@@ -1,9 +1,12 @@
 package gui;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
+import javax.media.j3d.LineArray;
 import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.geometry.Box;
@@ -30,39 +33,36 @@ public class ProgramGrid {
 		// Create a new Transform Group and apply a transformationss
 		TransformGroup nodeTrans = new TransformGroup();
 		Vector3f vector = null;
-		float xdif = (xdim % 2 == 0) ? (sidelength * (xdim/2 - 1)) : (sidelength * (xdim - 2) / 2);
-		float ydif = (ydim % 2 == 0) ? (sidelength * (ydim/2 - 1)) : (sidelength * (ydim - 2) / 2);
-		float zdif = (zdim % 2 == 0) ? (sidelength * (zdim/2 - 1)) : (sidelength * (zdim - 2) / 2);
-
+		
+		LineArray l = new LineArray(2,LineArray.COORDINATES);
+		Point3f[] p = new Point3f[2];
 		switch(plane){
 		case 0:
-			vector = new Vector3f(pos1 * sidelength - xdif, pos2 * sidelength - ydif, 0);
+			p[0] = new Point3f(pos1 * sidelength, pos2 * sidelength, 0);
 			break;
 		case 1:
-			vector = new Vector3f(0, pos1 * sidelength - ydif, pos2 * sidelength - zdif);
+			p[0] = new Point3f(0, pos1 * sidelength, pos2 * sidelength);
 			break;
 		case 2:
-			vector = new Vector3f(pos1 * sidelength - xdif, 0, pos2 * sidelength - zdif);
+			p[0] = new Point3f(pos1 * sidelength, 0, pos2 * sidelength);
 			break;
 		}
-		Transform3D transform = new Transform3D();
-		transform.setTranslation(vector);
-
-		// Add the transform to the new group
-		nodeTrans.setTransform(transform);
 
 		// Add the new cube to the group, and the new group to the root
 		switch(plane){
 		case 0:
-			nodeTrans.addChild(new Box(linesize, linesize, sidelength * (float)zdim / 2, a));
+			p[1] =  new Point3f(pos1 * sidelength + linesize, pos2 * sidelength + linesize, sidelength * (float)zdim);
 			break;
 		case 1:
-			nodeTrans.addChild(new Box(sidelength * (float)xdim / 2, linesize, linesize, a));
+			p[1] = new Point3f(sidelength * (float)xdim, pos1 * sidelength + linesize, pos2 * sidelength + linesize);
 			break;
 		case 2:
-			nodeTrans.addChild(new Box(linesize, sidelength * (float)ydim / 2, linesize, a));
+			p[1] = new Point3f(pos1 * sidelength+linesize, sidelength * (float)ydim, pos2 * sidelength + linesize);
 			break;
 		}
+		l.setCoordinates(0, p);
+		
+		nodeTrans.addChild(new Shape3D(l,a));
 		return nodeTrans;
 	}
 
@@ -79,22 +79,22 @@ public class ProgramGrid {
 		// Given the dimensions, draw lines which go perpendicular to the planes
 
 		// XY plane
-		for(int x = -1; x < xdim; x++) {
-			for(int y = -1; y < ydim; y++) {
+		for(int x = 0; x <= xdim; x++) {
+			for(int y = 0; y <= ydim; y++) {
 				nodeRoot.addChild(drawOrthogonalLine(0, x, y, ap));
-			}	    	
+			}
 		}
 
 		// YZ plane
-		for(int y = -1; y < ydim; y++) {
-			for(int z = -1; z < zdim; z++) {
+		for(int y = 0; y <= ydim; y++) {
+			for(int z = 0; z <= zdim; z++) {
 				nodeRoot.addChild(drawOrthogonalLine(1, y, z, ap));
 			}
 		}
 
 		// XZ plane
-		for(int x = -1; x < xdim; x++) {
-			for(int z = -1; z < zdim; z++) {
+		for(int x = 0; x <= xdim; x++) {
+			for(int z = 0; z <= zdim; z++) {
 				nodeRoot.addChild(drawOrthogonalLine(2, x, z, ap));
 			}
 		}
