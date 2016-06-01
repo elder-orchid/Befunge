@@ -35,7 +35,7 @@ public class ProgramGrid {
 		TransformGroup nodeTrans = new TransformGroup();
 		
 		LineArray lineArray = new LineArray(2,LineArray.COORDINATES);
-		LineAttributes lineAttributes = new LineAttributes(linewidth, LineAttributes.PATTERN_SOLID, false);
+		LineAttributes lineAttributes = new LineAttributes(linewidth, LineAttributes.PATTERN_SOLID, true);
 		a.setLineAttributes(lineAttributes);
 		Point3f[] p = new Point3f[2];
 		switch(plane){
