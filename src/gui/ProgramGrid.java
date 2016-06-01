@@ -8,6 +8,7 @@ import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.media.j3d.TransparencyAttributes;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
@@ -67,7 +68,7 @@ public class ProgramGrid {
 		return nodeTrans;
 	}
 	
-	public TransformGroup highlightBox(int x, int y, int z, Color3f color) {
+	public TransformGroup highlightBox(int x, int y, int z, float transparency, Color3f color) {
 
 		// Check to make sure that the coordinates are in the prism
 		if(x > xdim-1 || y > ydim-1 || z > zdim-1 || x < 0 || y < 0 || z < 0) {
@@ -78,12 +79,14 @@ public class ProgramGrid {
 		// Initialize the transform group
 		TransformGroup transformGroup = new TransformGroup();
 
-		// Set up coloring
+		//Set up color
 		ColoringAttributes ca = new ColoringAttributes(color, ColoringAttributes.NICEST);
-
+		
 		// Set up appearance
 		Appearance ap = new Appearance();
 		ap.setColoringAttributes(ca);
+		TransparencyAttributes ta = new TransparencyAttributes(TransparencyAttributes.NICEST, transparency);
+		ap.setTransparencyAttributes(ta);
 
 		// Set up box
 		Box b = new Box(.1f, .1f, .1f, ap);
@@ -140,7 +143,7 @@ public class ProgramGrid {
 		}
 		
 		// 0,0,0 is the farthest bottom left corner
-		nodeRoot.addChild(highlightBox(0, 0, 0, new Color3f(0.0f, 0.0f, 1.0f)));
+		nodeRoot.addChild(highlightBox(0, 0, 0, 0.5f, new Color3f(0.0f, 0.0f, 1.0f)));
 
 		// Compile to perform optimizations on this content branch.
 		nodeRoot.compile();
