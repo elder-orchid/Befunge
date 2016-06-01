@@ -29,7 +29,6 @@ public class ProgramGrid {
 	}
 
 	private TransformGroup drawOrthogonalLine(int plane, float pos1, float pos2, Appearance a){
-		int linesize = 5;
 		// plane 1=XY, plane 2=YZ, plane 3=XZ
 		// Create a new Transform Group and apply a transformation
 		TransformGroup nodeTrans = new TransformGroup();
@@ -51,13 +50,13 @@ public class ProgramGrid {
 		// Add the new cube to the group, and the new group to the root
 		switch(plane){
 		case 0:
-			p[1] =  new Point3f(pos1 * sidelength + linesize, pos2 * sidelength + linesize, sidelength * (float)zdim);
+			p[1] =  new Point3f(pos1 * sidelength, pos2 * sidelength, sidelength * (float)zdim);
 			break;
 		case 1:
-			p[1] = new Point3f(sidelength * (float)xdim, pos1 * sidelength + linesize, pos2 * sidelength + linesize);
+			p[1] = new Point3f(sidelength * (float)xdim, pos1 * sidelength, pos2 * sidelength);
 			break;
 		case 2:
-			p[1] = new Point3f(pos1 * sidelength + linesize, sidelength * (float)ydim, pos2 * sidelength + linesize);
+			p[1] = new Point3f(pos1 * sidelength, sidelength * (float)ydim, pos2 * sidelength);
 			break;
 		}
 		l.setCoordinates(0, p);
