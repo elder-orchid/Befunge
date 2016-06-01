@@ -29,7 +29,8 @@ public class Screen extends JFrame {
 		ProgramGrid progGrid = new ProgramGrid(3, 1, 1, 0.2f, "A");
 
 		// Get the content branch from the Program Grid and add it to the universe
-		BranchGroup scene = progGrid.getBranchGroup();
+		// Input is to specify line width in pixels
+		BranchGroup scene = progGrid.getBranchGroup(5);
 		universe.addBranchGraph(scene);
 
 		// Configure this JFrame

@@ -3,6 +3,7 @@ import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.LineArray;
+import javax.media.j3d.LineAttributes;
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
@@ -28,12 +29,14 @@ public class ProgramGrid {
 		this.program = program;
 	}
 
-	private TransformGroup drawOrthogonalLine(int plane, float pos1, float pos2, Appearance a){
+	private TransformGroup drawOrthogonalLine(int plane, float pos1, float pos2, int linewidth, Appearance a) {
 		// plane 1=XY, plane 2=YZ, plane 3=XZ
 		// Create a new Transform Group and apply a transformation
 		TransformGroup nodeTrans = new TransformGroup();
 		
-		LineArray l = new LineArray(2,LineArray.COORDINATES);
+		LineArray lineArray = new LineArray(2,LineArray.COORDINATES);
+		LineAttributes lineAttributes = new LineAttributes(linewidth, LineAttributes.PATTERN_SOLID, false);
+		a.setLineAttributes(lineAttributes);
 		Point3f[] p = new Point3f[2];
 		switch(plane){
 		case 0:
@@ -59,9 +62,8 @@ public class ProgramGrid {
 			p[1] = new Point3f(pos1 * sidelength, sidelength * (float)ydim, pos2 * sidelength);
 			break;
 		}
-		l.setCoordinates(0, p);
-		
-		nodeTrans.addChild(new Shape3D(l,a));
+		lineArray.setCoordinates(0, p);
+		nodeTrans.addChild(new Shape3D(lineArray, a));
 		return nodeTrans;
 	}
 	
@@ -104,7 +106,7 @@ public class ProgramGrid {
 		return transformGroup;
 	}
 
-	public BranchGroup getBranchGroup() {
+	public BranchGroup getBranchGroup(int linewidth) {
 		// Create the root node of the content branch
 		BranchGroup nodeRoot = new BranchGroup();
 
@@ -119,21 +121,21 @@ public class ProgramGrid {
 		// XY plane
 		for(int x = 0; x <= xdim; x++) {
 			for(int y = 0; y <= ydim; y++) {
-				nodeRoot.addChild(drawOrthogonalLine(0, x, y, ap));
+				nodeRoot.addChild(drawOrthogonalLine(0, x, y, linewidth, ap));
 			}
 		}
 
 		// YZ plane
 		for(int y = 0; y <= ydim; y++) {
 			for(int z = 0; z <= zdim; z++) {
-				nodeRoot.addChild(drawOrthogonalLine(1, y, z, ap));
+				nodeRoot.addChild(drawOrthogonalLine(1, y, z, linewidth, ap));
 			}
 		}
 
 		// XZ plane
 		for(int x = 0; x <= xdim; x++) {
 			for(int z = 0; z <= zdim; z++) {
-				nodeRoot.addChild(drawOrthogonalLine(2, x, z, ap));
+				nodeRoot.addChild(drawOrthogonalLine(2, x, z, linewidth, ap));
 			}
 		}
 		
