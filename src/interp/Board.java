@@ -15,10 +15,10 @@ public class Board {
 	public enum Direction{//uses mathematical orientation:z is up and down, y is depth
 		Left,		//x--
 		Right,		//x++
-		Backward,	//y--
-		Foreward,	//y++
-		Up,			//z--
-		Down;		//z++
+		Backward,	//z--
+		Foreward,	//z++
+		Up,			//y--
+		Down;		//y++
 
 		private static Direction[] all=null;
 		
@@ -33,17 +33,17 @@ public class Board {
 		private int[] addValue(int[] in, char[][][] board){
 			switch(this){
 			case Left:
-				return new int[] {mod(-1+in[0],board.length),in[1],in[2]};
+				return new int[] {in[0],in[1],mod(-1+in[2],board[0][0].length)};//x is last index
 			case Right:
-				return new int[] {mod(1+in[0],board.length),in[1],in[2]};
-			case Backward:
-				return new int[] {in[0],mod(-1+in[1],board[0].length),in[2]};
-			case Foreward:
-				return new int[] {in[0],mod(1+in[1],board[0].length),in[2]};
-			case Up:
-				return new int[] {in[0],in[1],mod(-1+in[2],board[0][0].length)};
-			case Down:
 				return new int[] {in[0],in[1],mod(1+in[2],board[0][0].length)};
+			case Backward:
+				return new int[] {mod(-1+in[0],board.length),in[1],in[2]};//z is first index
+			case Foreward:
+				return new int[] {mod(1+in[0],board.length),in[1],in[2]};
+			case Up:
+				return new int[] {in[0],mod(-1+in[1],board[0].length),in[2]};//y is middle index
+			case Down:
+				return new int[] {in[0],mod(1+in[1],board[0].length),in[2]};
 			}
 			return new int[] {0,0,0};//catch all
 		}
