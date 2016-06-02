@@ -26,7 +26,7 @@ public class Screen extends JFrame {
 		universe.getViewingPlatform().setNominalViewingTransform();
 
 		// Create and set up the Program Grid
-		ProgramGrid progGrid = new ProgramGrid(3, 1, 1, 0.2f, "A");
+		ProgramGrid progGrid = new ProgramGrid(3, 3, 3, 0.2f, "A");
 
 		// Get the content branch from the Program Grid and add it to the universe
 		// Input is to specify line width in pixels
@@ -37,6 +37,9 @@ public class Screen extends JFrame {
 		setSize(500, 500);
 		setTitle("BEFUNGE");
 		setVisible(true);
+
+		// Add key listener
+		universe.getCanvas().addKeyListener(new KeyHandler());
 
 		// Exit when window is closed
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

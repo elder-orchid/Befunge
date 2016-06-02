@@ -10,6 +10,7 @@ import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.TransparencyAttributes;
 import javax.vecmath.Color3f;
+import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
@@ -17,11 +18,15 @@ import com.sun.j3d.utils.geometry.Box;
 
 public class ProgramGrid {
 
-	int xdim, ydim, zdim;
-	float sidelength;
+	static int xdim, ydim, zdim;
+	static float sidelength;
 	String program;
-
+	static Point3d boxLoc = new Point3d(0, 0, 0);
+	static TransformGroup transformGroup = new TransformGroup();
+	static Transform3D transform = new Transform3D();
 	// Although only one string is used for input, it can be broken down based on the other dimensions.
+	
+	@SuppressWarnings("static-access")
 	public ProgramGrid(int xdim, int ydim, int zdim, float sidelength, String program) {
 		this.xdim = xdim;
 		this.ydim = ydim;
@@ -68,7 +73,7 @@ public class ProgramGrid {
 		return nodeTrans;
 	}
 	
-	public TransformGroup highlightBox(int x, int y, int z, float transparency, Color3f color) {
+	public static TransformGroup highlightBox(int x, int y, int z, float transparency, Color3f color) {
 
 		// Check to make sure that the coordinates are in the prism
 		if(x > xdim-1 || y > ydim-1 || z > zdim-1 || x < 0 || y < 0 || z < 0) {
@@ -77,8 +82,7 @@ public class ProgramGrid {
 		}
 
 		// Initialize the transform group
-		TransformGroup transformGroup = new TransformGroup();
-
+		transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		//Set up color
 		ColoringAttributes ca = new ColoringAttributes(color, ColoringAttributes.NICEST);
 		
@@ -98,7 +102,6 @@ public class ProgramGrid {
 				sidelength / 2 + sidelength * z);
 
 		// Add offset
-		Transform3D transform = new Transform3D();
 		transform.setTranslation(vector);
 
 		// Add the transform to the new group
@@ -108,10 +111,57 @@ public class ProgramGrid {
 		transformGroup.addChild(b);
 		return transformGroup;
 	}
+	
+	public static void moveBox(int key) {
+		switch(key)
+		{
+		// Left
+		case 37:
+			if(boxLoc.x > 0)
+				boxLoc.x--;
+			break;
+		// Up
+		case 38:
+			if(boxLoc.y < ydim-1)
+				boxLoc.y++;
+			break;
+		// Right
+		case 39:
+			if(boxLoc.x < xdim-1)
+				boxLoc.x++;
+			break;
+		// Down
+		case 40:
+			if(boxLoc.y > 0)
+				boxLoc.y--;
+			break;
+		// Close
+		case -1:
+			if(boxLoc.z > 0)
+				boxLoc.z--;
+			break;
+		// Far
+		case -2:
+			if(boxLoc.z < zdim-1)
+				boxLoc.z++;
+			break;
+		}
+		// Set offset based on input
+		Vector3f vector = new Vector3f(
+				sidelength / 2 + sidelength * (int)boxLoc.x,
+				sidelength / 2 + sidelength * (int)boxLoc.y,
+				sidelength / 2 + sidelength * (int)boxLoc.z);
+		
+		transform.setTranslation(vector);
+		
+		// Add offset
+		transformGroup.setTransform(transform);
+	}
+	
 
 	public BranchGroup getBranchGroup(int linewidth) {
 		// Create the root node of the content branch
-		BranchGroup nodeRoot = new BranchGroup();
+		BranchGroup rootGroup = new BranchGroup(), lineGroup = new BranchGroup(), boxGroup = new BranchGroup();
 
 		// Render as a wireframe
 		Appearance ap = new Appearance();
@@ -124,31 +174,35 @@ public class ProgramGrid {
 		// XY plane
 		for(int x = 0; x <= xdim; x++) {
 			for(int y = 0; y <= ydim; y++) {
-				nodeRoot.addChild(drawOrthogonalLine(0, x, y, linewidth, ap));
+				lineGroup.addChild(drawOrthogonalLine(0, x, y, linewidth, ap));
 			}
 		}
 
 		// YZ plane
 		for(int y = 0; y <= ydim; y++) {
 			for(int z = 0; z <= zdim; z++) {
-				nodeRoot.addChild(drawOrthogonalLine(1, y, z, linewidth, ap));
+				lineGroup.addChild(drawOrthogonalLine(1, y, z, linewidth, ap));
 			}
 		}
 
 		// XZ plane
 		for(int x = 0; x <= xdim; x++) {
 			for(int z = 0; z <= zdim; z++) {
-				nodeRoot.addChild(drawOrthogonalLine(2, x, z, linewidth, ap));
+				lineGroup.addChild(drawOrthogonalLine(2, x, z, linewidth, ap));
 			}
 		}
 		
 		// 0,0,0 is the farthest bottom left corner
-		nodeRoot.addChild(highlightBox(0, 0, 0, 0.5f, new Color3f(0.0f, 0.0f, 1.0f)));
-
+		boxGroup.addChild(highlightBox((int)boxLoc.x, (int)boxLoc.y, (int)boxLoc.z, 0.5f, new Color3f(0.0f, 0.0f, 1.0f)));
+		
+		// Add the subgroups
+		rootGroup.addChild(lineGroup);
+		rootGroup.addChild(boxGroup);
+		
 		// Compile to perform optimizations on this content branch.
-		nodeRoot.compile();
+		rootGroup.compile();
 
-		return nodeRoot;
+		return rootGroup;
 	}
 
 }
