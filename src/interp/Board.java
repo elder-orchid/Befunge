@@ -120,12 +120,14 @@ public class Board {
 						stack[stackIndex - 1] = 0;//set used slot to 0
 						stackIndex--;//go to 0 slot
 					}
+					break;
 				case ('%'):	
 					if(stackIndex >= 2){
 						stack[stackIndex - 2] = (byte) (stack[stackIndex - 2] % stack[stackIndex - 1]);//subtract stack value of previous from stack value two previous and set the remainder in the stack 2 previous
 						stack[stackIndex - 1] = 0;//set used slot to 0
 						stackIndex--;//go to 0 slot
 					}
+					break;
 				case ('!'):
 					if(stackIndex >= 1){
 						stack[stackIndex - 1] = (byte) (stack[stackIndex - 1] == 0?1:0);
@@ -166,12 +168,14 @@ public class Board {
 						stack[stackIndex - 1] = 0;
 						stackIndex--;
 					}
+					break;
 				case ('|')://z axis
 					if(stackIndex >= 1){
 						this.dir = stack[stackIndex - 1]==0?Direction.Down:Direction.Up;
 						stack[stackIndex - 1] = 0;
 						stackIndex--;
 					}
+					break;
 				case ('i')://y axis
 					if(stackIndex >= 1){
 						this.dir = stack[stackIndex - 1]==0?Direction.Foreward:Direction.Backward;
@@ -222,6 +226,7 @@ public class Board {
 					break;
 				case ('@'):
 					this.finished = true;
+					break;
 				case ('g')://get
 					if (stackIndex >= 4 && stack[stackIndex - 3] < this.board.length && stack[stackIndex - 2] <= this.board[0].length && stack[stackIndex - 1] <= this.board[0][0].length){
 						this.board[stack[stackIndex - 3]][stack[stackIndex - 2]][stack[stackIndex - 1]] = (char) stack[stackIndex - 4];

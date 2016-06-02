@@ -16,12 +16,9 @@ public class BoardDriver {
 		System.out.println(b);
 		*/
 		b = new Board(new int[] {3,3,5});
-		b.board[0][0] = new char[] {'v','8','2','/','@'};//test /
+		b.board[0][0] = new char[] {'v','3','1','/','@'};//test /
 		b.sprint();
 		System.out.println(b);
-		//the fuck?
-		//apparently 8/2 = 0
-		//needs bugfix
 		
 		/*
 		b = new Board(new int[] {3,3,5});
