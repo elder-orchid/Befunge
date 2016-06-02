@@ -46,26 +46,26 @@ public class ProgramGrid {
 		Point3f[] p = new Point3f[2];
 		switch(plane){
 		case 0:
-			p[0] = new Point3f(pos1 * sidelength, pos2 * sidelength, 0);
+			p[0] = new Point3f(pos1 * sidelength - sidelength * xdim / 2, pos2 * sidelength - sidelength * ydim / 2, -sidelength * zdim / 2);
 			break;
 		case 1:
-			p[0] = new Point3f(0, pos1 * sidelength, pos2 * sidelength);
+			p[0] = new Point3f(-sidelength * xdim / 2, pos1 * sidelength - sidelength * ydim / 2, pos2 * sidelength - sidelength * zdim / 2);
 			break;
 		case 2:
-			p[0] = new Point3f(pos1 * sidelength, 0, pos2 * sidelength);
+			p[0] = new Point3f(pos1 * sidelength - sidelength * xdim / 2, -sidelength * ydim / 2, pos2 * sidelength - sidelength * zdim / 2);
 			break;
 		}
 
 		// Add the new cube to the group, and the new group to the root
 		switch(plane){
 		case 0:
-			p[1] =  new Point3f(pos1 * sidelength, pos2 * sidelength, sidelength * (float)zdim);
+			p[1] =  new Point3f(pos1 * sidelength - sidelength * xdim / 2, pos2 * sidelength- sidelength * ydim / 2, sidelength * (float)zdim - sidelength * zdim / 2);
 			break;
 		case 1:
-			p[1] = new Point3f(sidelength * (float)xdim, pos1 * sidelength, pos2 * sidelength);
+			p[1] = new Point3f(sidelength * (float)xdim - sidelength * xdim / 2, pos1 * sidelength - sidelength * ydim / 2, pos2 * sidelength - sidelength * zdim / 2);
 			break;
 		case 2:
-			p[1] = new Point3f(pos1 * sidelength, sidelength * (float)ydim, pos2 * sidelength);
+			p[1] = new Point3f(pos1 * sidelength - sidelength * xdim / 2, sidelength * (float)ydim - sidelength * ydim / 2, pos2 * sidelength - sidelength * zdim / 2);
 			break;
 		}
 		lineArray.setCoordinates(0, p);
@@ -97,9 +97,9 @@ public class ProgramGrid {
 
 		// Set offset based on input
 		Vector3f vector = new Vector3f(
-				sidelength / 2 + sidelength * x,
-				sidelength / 2 + sidelength * y,
-				sidelength / 2 + sidelength * z);
+				sidelength / 2 + sidelength * x - sidelength * xdim / 2,
+				sidelength / 2 + sidelength * y - sidelength * ydim / 2,
+				sidelength / 2 + sidelength * z - sidelength * zdim / 2);
 
 		// Add offset
 		transform.setTranslation(vector);
@@ -148,9 +148,9 @@ public class ProgramGrid {
 		}
 		// Set offset based on input
 		Vector3f vector = new Vector3f(
-				sidelength / 2 + sidelength * (int)boxLoc.x,
-				sidelength / 2 + sidelength * (int)boxLoc.y,
-				sidelength / 2 + sidelength * (int)boxLoc.z);
+				sidelength / 2 + sidelength * (int)boxLoc.x - sidelength * xdim / 2,
+				sidelength / 2 + sidelength * (int)boxLoc.y - sidelength * ydim / 2,
+				sidelength / 2 + sidelength * (int)boxLoc.z - sidelength * zdim / 2);
 		
 		transform.setTranslation(vector);
 		
