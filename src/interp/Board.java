@@ -33,13 +33,13 @@ public class Board {
 		private int[] addValue(int[] in, char[][][] board){
 			switch(this){
 			case Left:
-				return new int[] {in[0],in[1],mod(-1+in[2],board[0][0].length)};//x is last index
+				return new int[] {mod(-1+in[0],board.length),in[1],in[2]};//x is first index
 			case Right:
-				return new int[] {in[0],in[1],mod(1+in[2],board[0][0].length)};
-			case Backward:
-				return new int[] {mod(-1+in[0],board.length),in[1],in[2]};//z is first index
-			case Foreward:
 				return new int[] {mod(1+in[0],board.length),in[1],in[2]};
+			case Backward:
+				return new int[] {in[0],in[1],mod(-1+in[2],board[0][0].length)};//z is last index
+			case Foreward:
+				return new int[] {in[0],in[1],mod(1+in[2],board[0][0].length)};
 			case Up:
 				return new int[] {in[0],mod(-1+in[1],board[0].length),in[2]};//y is middle index
 			case Down:
