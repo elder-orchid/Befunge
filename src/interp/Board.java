@@ -83,7 +83,7 @@ public class Board {
 	public void step(){//pos is length 3
 		final char curVal = board[pos[0]][pos[1]][pos[2]];
 		if(!finished){
-			if(stringIn){// currently a string
+			if(stringIn && curVal!='\"'){// currently a string
 				stack[stackIndex] = (byte)curVal;
 				stackIndex++;
 			}else if (((int)curVal - (int)'0' < 10 && (int)curVal - (int)'0'>=0) || ((int)curVal - (int)'A' < 6 && (int)curVal - (int)'A'>=0) || ((int)curVal - (int)'a' < 6 && (int)curVal - (int)'a'>=0)) {// if it's a hex input
@@ -247,8 +247,7 @@ public class Board {
 					}
 					break;
 				}
-			}
-			
+			}			
 			this.pos = this.dir.addValue(this.pos, board);//move in direction
 		}
 	}
