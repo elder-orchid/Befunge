@@ -12,10 +12,10 @@ public class KeyHandler implements KeyListener {
 		currentkeys.add(key.getKeyCode());
 		if(currentkeys.contains(17)) {
 			if(currentkeys.contains(38)) {
-				ProgramGrid.moveBox(-1);
+				ProgramGrid.moveBox(-2);
 			}
 			else if(currentkeys.contains(40)) {
-				ProgramGrid.moveBox(-2);
+				ProgramGrid.moveBox(-1);
 			}
 		}
 		else {

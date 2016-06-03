@@ -2,6 +2,7 @@ package gui;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.GeometryArray;
 import javax.media.j3d.LineArray;
 import javax.media.j3d.LineAttributes;
 import javax.media.j3d.PolygonAttributes;
@@ -9,6 +10,7 @@ import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.TransparencyAttributes;
+import javax.vecmath.Color3b;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Point3f;
@@ -35,14 +37,15 @@ public class ProgramGrid {
 		this.program = program;
 	}
 
-	private TransformGroup drawOrthogonalLine(int plane, float pos1, float pos2, int linewidth, Appearance a) {
+	private TransformGroup drawOrthogonalLine(int plane, float pos1, float pos2, int linewidth, Color3b color, Appearance a) {
 		// plane 1=XY, plane 2=YZ, plane 3=XZ
 		// Create a new Transform Group and apply a transformation
 		TransformGroup nodeTrans = new TransformGroup();
 		
-		LineArray lineArray = new LineArray(2,LineArray.COORDINATES);
+		LineArray lineArray = new LineArray(2,LineArray.COORDINATES | LineArray.COLOR_3);
 		LineAttributes lineAttributes = new LineAttributes(linewidth, LineAttributes.PATTERN_SOLID, true);
 		a.setLineAttributes(lineAttributes);
+		//lineArray.setCapability(GeometryArray.ALLOW_COLOR_WRITE);
 		Point3f[] p = new Point3f[2];
 		switch(plane){
 		case 0:
@@ -69,6 +72,11 @@ public class ProgramGrid {
 			break;
 		}
 		lineArray.setCoordinates(0, p);
+		
+		//colors
+		lineArray.setColor(0, color);
+		lineArray.setColor(1, color);
+
 		nodeTrans.addChild(new Shape3D(lineArray, a));
 		return nodeTrans;
 	}
@@ -171,29 +179,47 @@ public class ProgramGrid {
 
 		// Given the dimensions, draw lines which go perpendicular to the planes
 
+		//x==0, y==0
+		{
+			lineGroup.addChild(drawOrthogonalLine(0, 0, 0, linewidth, new Color3b((byte)255,(byte)0,(byte)0),ap));
+		}
 		// XY plane
 		for(int x = 0; x <= xdim; x++) {
 			for(int y = 0; y <= ydim; y++) {
-				lineGroup.addChild(drawOrthogonalLine(0, x, y, linewidth, ap));
+				if(x != 0 || y != 0){
+					lineGroup.addChild(drawOrthogonalLine(0, x, y, linewidth, new Color3b((byte)255,(byte)255,(byte)255), ap));
+				}
 			}
 		}
 
+		//y==0, z==0
+		{
+			lineGroup.addChild(drawOrthogonalLine(1, 0, 0, linewidth, new Color3b((byte)0,(byte)255,(byte)0),ap));
+		}
 		// YZ plane
 		for(int y = 0; y <= ydim; y++) {
 			for(int z = 0; z <= zdim; z++) {
-				lineGroup.addChild(drawOrthogonalLine(1, y, z, linewidth, ap));
+				if(y != 0 || z != 0){
+					lineGroup.addChild(drawOrthogonalLine(1, y, z, linewidth,new Color3b((byte)255,(byte)255,(byte)255), ap));
+				}
 			}
 		}
 
+		//y==0, z==0
+		{
+			lineGroup.addChild(drawOrthogonalLine(2, 0, 0, linewidth, new Color3b((byte)0,(byte)0,(byte)255),ap));
+		}
 		// XZ plane
 		for(int x = 0; x <= xdim; x++) {
 			for(int z = 0; z <= zdim; z++) {
-				lineGroup.addChild(drawOrthogonalLine(2, x, z, linewidth, ap));
+				if(x != 0 || z != 0){
+					lineGroup.addChild(drawOrthogonalLine(2, x, z, linewidth, new Color3b((byte)255,(byte)255,(byte)255), ap));
+				}
 			}
 		}
 		
 		// 0,0,0 is the farthest bottom left corner
-		boxGroup.addChild(highlightBox((int)boxLoc.x, (int)boxLoc.y, (int)boxLoc.z, 0.5f, new Color3f(0.0f, 0.0f, 1.0f)));
+		boxGroup.addChild(highlightBox((int)boxLoc.x, (int)boxLoc.y, (int)boxLoc.z, 0.5f, new Color3f(0.8f, 0.0f, 0.8f)));
 		
 		// Add the subgroups
 		rootGroup.addChild(lineGroup);
