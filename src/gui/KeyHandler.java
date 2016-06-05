@@ -4,7 +4,6 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class KeyHandler implements KeyListener {
-	ArrayList<Integer> currentkeys = new ArrayList<Integer>();
 	ProgramGrid grid;
 	
 	public KeyHandler(ProgramGrid grid) {
@@ -13,27 +12,39 @@ public class KeyHandler implements KeyListener {
 	
 	@Override
 	public void keyPressed(KeyEvent key) {
-		currentkeys.add(key.getKeyCode());
-		if(currentkeys.contains(17)) {
-			if(currentkeys.contains(38)) {
+		if(key.isControlDown()) {
+			if(key.getKeyCode() == 38) {
 				grid.moveBox(-2);
 			}
-			else if(currentkeys.contains(40)) {
+			else if(key.getKeyCode() == 40) {
 				grid.moveBox(-1);
 			}
 		}
 		else {
-			grid.moveBox(currentkeys.get(currentkeys.size()-1));
+			if(key.getKeyCode() > 36 && key.getKeyCode() < 41){
+				grid.moveBox(key.getKeyCode());
+			}else{
+				if(key.getKeyChar() == '\b'){//backspace
+					grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z] = (char)0;
+				}else if(key.getKeyCode() == 13){//enter:step the board
+					//to be implemented later
+				}else if(key.getKeyCode() == 27){//escape: reset
+					//to be implemented later
+				}else{//write to the board
+					grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z] = key.getKeyChar();
+				}
+			}
 		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent key) {
-		currentkeys.remove(currentkeys.size()-1);
+	public void keyTyped(KeyEvent key) {
+		
 	}
 
 	@Override
-	public void keyTyped(KeyEvent key) {
+	public void keyReleased(KeyEvent arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 

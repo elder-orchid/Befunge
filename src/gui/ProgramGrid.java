@@ -2,7 +2,6 @@ package gui;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
-import javax.media.j3d.GeometryArray;
 import javax.media.j3d.LineArray;
 import javax.media.j3d.LineAttributes;
 import javax.media.j3d.PolygonAttributes;
@@ -18,9 +17,11 @@ import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.geometry.Box;
 
+import interp.Board;
+
 public class ProgramGrid {
 
-	int xdim, ydim, zdim;
+	Board b;
 	float sidelength;
 	String program;
 	Point3d boxLoc = new Point3d(0, 0, 0);
@@ -28,11 +29,8 @@ public class ProgramGrid {
 	 Transform3D transform = new Transform3D();
 	// Although only one string is used for input, it can be broken down based on the other dimensions.
 	
-	@SuppressWarnings("static-access")
 	public ProgramGrid(int xdim, int ydim, int zdim, float sidelength, String program) {
-		this.xdim = xdim;
-		this.ydim = ydim;
-		this.zdim = zdim;
+		this.b = new Board(new int[] {xdim, ydim, zdim});
 		this.sidelength = sidelength;
 		this.program = program;
 	}
@@ -49,26 +47,26 @@ public class ProgramGrid {
 		Point3f[] p = new Point3f[2];
 		switch(plane){
 		case 0:
-			p[0] = new Point3f(pos1 * sidelength - sidelength * xdim / 2, pos2 * sidelength - sidelength * ydim / 2, -sidelength * zdim / 2);
+			p[0] = new Point3f(pos1 * sidelength - sidelength * b.board.length / 2, pos2 * sidelength - sidelength * b.board[0].length / 2, -sidelength * b.board[0][0].length / 2);
 			break;
 		case 1:
-			p[0] = new Point3f(-sidelength * xdim / 2, pos1 * sidelength - sidelength * ydim / 2, pos2 * sidelength - sidelength * zdim / 2);
+			p[0] = new Point3f(-sidelength * b.board.length / 2, pos1 * sidelength - sidelength * b.board[0].length / 2, pos2 * sidelength - sidelength * b.board[0][0].length / 2);
 			break;
 		case 2:
-			p[0] = new Point3f(pos1 * sidelength - sidelength * xdim / 2, -sidelength * ydim / 2, pos2 * sidelength - sidelength * zdim / 2);
+			p[0] = new Point3f(pos1 * sidelength - sidelength * b.board.length / 2, -sidelength * b.board[0].length / 2, pos2 * sidelength - sidelength * b.board[0][0].length / 2);
 			break;
 		}
 
 		// Add the new cube to the group, and the new group to the root
 		switch(plane){
 		case 0:
-			p[1] =  new Point3f(pos1 * sidelength - sidelength * xdim / 2, pos2 * sidelength- sidelength * ydim / 2, sidelength * (float)zdim - sidelength * zdim / 2);
+			p[1] =  new Point3f(pos1 * sidelength - sidelength * b.board.length / 2, pos2 * sidelength- sidelength * b.board[0].length / 2, sidelength * (float)b.board[0][0].length - sidelength * b.board[0][0].length / 2);
 			break;
 		case 1:
-			p[1] = new Point3f(sidelength * (float)xdim - sidelength * xdim / 2, pos1 * sidelength - sidelength * ydim / 2, pos2 * sidelength - sidelength * zdim / 2);
+			p[1] = new Point3f(sidelength * (float)b.board.length - sidelength * b.board.length / 2, pos1 * sidelength - sidelength * b.board[0].length / 2, pos2 * sidelength - sidelength * b.board[0][0].length / 2);
 			break;
 		case 2:
-			p[1] = new Point3f(pos1 * sidelength - sidelength * xdim / 2, sidelength * (float)ydim - sidelength * ydim / 2, pos2 * sidelength - sidelength * zdim / 2);
+			p[1] = new Point3f(pos1 * sidelength - sidelength * b.board.length / 2, sidelength * (float)b.board[0].length - sidelength * b.board[0].length / 2, pos2 * sidelength - sidelength * b.board[0][0].length / 2);
 			break;
 		}
 		lineArray.setCoordinates(0, p);
@@ -84,7 +82,7 @@ public class ProgramGrid {
 	public TransformGroup highlightBox(int x, int y, int z, float transparency, Color3f color) {
 
 		// Check to make sure that the coordinates are in the prism
-		if(x > xdim-1 || y > ydim-1 || z > zdim-1 || x < 0 || y < 0 || z < 0) {
+		if(x > b.board.length-1 || y > b.board[0].length-1 || z > b.board[0][0].length-1 || x < 0 || y < 0 || z < 0) {
 			System.out.println("Cannot highlight box (invalid coordinates)");
 			return null;
 		}
@@ -101,13 +99,13 @@ public class ProgramGrid {
 		ap.setTransparencyAttributes(ta);
 
 		// Set up box
-		Box b = new Box(.1f, .1f, .1f, ap);
+		Box box = new Box(.1f, .1f, .1f, ap);
 
 		// Set offset based on input
 		Vector3f vector = new Vector3f(
-				sidelength / 2 + sidelength * x - sidelength * xdim / 2,
-				sidelength / 2 + sidelength * y - sidelength * ydim / 2,
-				sidelength / 2 + sidelength * z - sidelength * zdim / 2);
+				sidelength / 2 + sidelength * x - sidelength * b.board.length / 2,
+				sidelength / 2 + sidelength * y - sidelength * b.board[0].length / 2,
+				sidelength / 2 + sidelength * z - sidelength * b.board[0][0].length / 2);
 
 		// Add offset
 		transform.setTranslation(vector);
@@ -116,7 +114,7 @@ public class ProgramGrid {
 		transformGroup.setTransform(transform);
 
 		// Add box
-		transformGroup.addChild(b);
+		transformGroup.addChild(box);
 		return transformGroup;
 	}
 	
@@ -130,12 +128,12 @@ public class ProgramGrid {
 			break;
 		// Up
 		case 38:
-			if(boxLoc.y < ydim-1)
+			if(boxLoc.y < b.board[0].length-1)
 				boxLoc.y++;
 			break;
 		// Right
 		case 39:
-			if(boxLoc.x < xdim-1)
+			if(boxLoc.x < b.board.length-1)
 				boxLoc.x++;
 			break;
 		// Down
@@ -150,15 +148,15 @@ public class ProgramGrid {
 			break;
 		// Far
 		case -2:
-			if(boxLoc.z < zdim-1)
+			if(boxLoc.z < b.board[0][0].length-1)
 				boxLoc.z++;
 			break;
 		}
 		// Set offset based on input
 		Vector3f vector = new Vector3f(
-				sidelength / 2 + sidelength * (int)boxLoc.x - sidelength * xdim / 2,
-				sidelength / 2 + sidelength * (int)boxLoc.y - sidelength * ydim / 2,
-				sidelength / 2 + sidelength * (int)boxLoc.z - sidelength * zdim / 2);
+				sidelength / 2 + sidelength * (int)boxLoc.x - sidelength * b.board.length / 2,
+				sidelength / 2 + sidelength * (int)boxLoc.y - sidelength * b.board[0].length / 2,
+				sidelength / 2 + sidelength * (int)boxLoc.z - sidelength * b.board[0][0].length / 2);
 		
 		transform.setTranslation(vector);
 		
@@ -184,8 +182,8 @@ public class ProgramGrid {
 			lineGroup.addChild(drawOrthogonalLine(0, 0, 0, linewidth, new Color3b((byte)255,(byte)0,(byte)0),ap));
 		}
 		// XY plane
-		for(int x = 0; x <= xdim; x++) {
-			for(int y = 0; y <= ydim; y++) {
+		for(int x = 0; x <= b.board.length; x++) {
+			for(int y = 0; y <= b.board[0].length; y++) {
 				if(x != 0 || y != 0){
 					lineGroup.addChild(drawOrthogonalLine(0, x, y, linewidth, new Color3b((byte)255,(byte)255,(byte)255), ap));
 				}
@@ -197,8 +195,8 @@ public class ProgramGrid {
 			lineGroup.addChild(drawOrthogonalLine(1, 0, 0, linewidth, new Color3b((byte)0,(byte)255,(byte)0),ap));
 		}
 		// YZ plane
-		for(int y = 0; y <= ydim; y++) {
-			for(int z = 0; z <= zdim; z++) {
+		for(int y = 0; y <= b.board[0].length; y++) {
+			for(int z = 0; z <= b.board[0][0].length; z++) {
 				if(y != 0 || z != 0){
 					lineGroup.addChild(drawOrthogonalLine(1, y, z, linewidth,new Color3b((byte)255,(byte)255,(byte)255), ap));
 				}
@@ -210,8 +208,8 @@ public class ProgramGrid {
 			lineGroup.addChild(drawOrthogonalLine(2, 0, 0, linewidth, new Color3b((byte)0,(byte)0,(byte)255),ap));
 		}
 		// XZ plane
-		for(int x = 0; x <= xdim; x++) {
-			for(int z = 0; z <= zdim; z++) {
+		for(int x = 0; x <= b.board.length; x++) {
+			for(int z = 0; z <= b.board[0][0].length; z++) {
 				if(x != 0 || z != 0){
 					lineGroup.addChild(drawOrthogonalLine(2, x, z, linewidth, new Color3b((byte)255,(byte)255,(byte)255), ap));
 				}
