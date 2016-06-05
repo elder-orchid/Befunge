@@ -8,6 +8,7 @@ import javax.swing.*;
 // This class is the main handler for screen content
 @SuppressWarnings("serial")
 public class Screen extends JFrame {
+	ProgramGrid progGrid;
 	public Screen() {
 		// Create the universe!
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
@@ -26,7 +27,7 @@ public class Screen extends JFrame {
 		universe.getViewingPlatform().setNominalViewingTransform();
 
 		// Create and set up the Program Grid
-		ProgramGrid progGrid = new ProgramGrid(3, 3, 3, 0.2f, "A");
+		progGrid = new ProgramGrid(3, 3, 3, 0.2f, "A");
 
 		// Get the content branch from the Program Grid and add it to the universe
 		// Input is to specify line width in pixels
@@ -39,7 +40,7 @@ public class Screen extends JFrame {
 		setVisible(true);
 
 		// Add key listener
-		universe.getCanvas().addKeyListener(new KeyHandler());
+		universe.getCanvas().addKeyListener(new KeyHandler(progGrid));
 
 		// Exit when window is closed
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

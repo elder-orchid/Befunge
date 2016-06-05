@@ -4,22 +4,26 @@ import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
 public class KeyHandler implements KeyListener {
-
 	ArrayList<Integer> currentkeys = new ArrayList<Integer>();
+	ProgramGrid grid;
+	
+	public KeyHandler(ProgramGrid grid) {
+		this.grid = grid;
+	}
 	
 	@Override
 	public void keyPressed(KeyEvent key) {
 		currentkeys.add(key.getKeyCode());
 		if(currentkeys.contains(17)) {
 			if(currentkeys.contains(38)) {
-				ProgramGrid.moveBox(-2);
+				grid.moveBox(-2);
 			}
 			else if(currentkeys.contains(40)) {
-				ProgramGrid.moveBox(-1);
+				grid.moveBox(-1);
 			}
 		}
 		else {
-			ProgramGrid.moveBox(currentkeys.get(currentkeys.size()-1));
+			grid.moveBox(currentkeys.get(currentkeys.size()-1));
 		}
 	}
 

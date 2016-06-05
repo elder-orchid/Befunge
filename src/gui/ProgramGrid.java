@@ -20,12 +20,12 @@ import com.sun.j3d.utils.geometry.Box;
 
 public class ProgramGrid {
 
-	static int xdim, ydim, zdim;
-	static float sidelength;
+	int xdim, ydim, zdim;
+	float sidelength;
 	String program;
-	static Point3d boxLoc = new Point3d(0, 0, 0);
-	static TransformGroup transformGroup = new TransformGroup();
-	static Transform3D transform = new Transform3D();
+	Point3d boxLoc = new Point3d(0, 0, 0);
+	TransformGroup transformGroup = new TransformGroup();
+	 Transform3D transform = new Transform3D();
 	// Although only one string is used for input, it can be broken down based on the other dimensions.
 	
 	@SuppressWarnings("static-access")
@@ -81,7 +81,7 @@ public class ProgramGrid {
 		return nodeTrans;
 	}
 	
-	public static TransformGroup highlightBox(int x, int y, int z, float transparency, Color3f color) {
+	public TransformGroup highlightBox(int x, int y, int z, float transparency, Color3f color) {
 
 		// Check to make sure that the coordinates are in the prism
 		if(x > xdim-1 || y > ydim-1 || z > zdim-1 || x < 0 || y < 0 || z < 0) {
@@ -120,7 +120,7 @@ public class ProgramGrid {
 		return transformGroup;
 	}
 	
-	public static void moveBox(int key) {
+	public void moveBox(int key) {
 		switch(key)
 		{
 		// Left
