@@ -3,6 +3,9 @@ import com.sun.j3d.utils.universe.*;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import javax.media.j3d.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 // This class is the main handler for screen content
@@ -10,12 +13,41 @@ import javax.swing.*;
 public class Screen extends JFrame {
 	ProgramGrid progGrid;
 	public Screen() {
-		// Create the universe!
+		// Config
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
+		
+		// Canvas for 3d stuff
 		Canvas3D canvas = new Canvas3D(config);
+		
+		// Panel/gui
+		JPanel controlPanel = new JPanel(new FlowLayout());
+		JButton newP = new JButton("New Program"), saveP = new JButton("Save Program"), loadP = new JButton("Load Program");
+		newP.addActionListener(new ActionListener() {
+			  public void actionPerformed(ActionEvent e) {
+				  System.out.println("New program");
+			  }
+		});
+		saveP.addActionListener(new ActionListener() {
+			  public void actionPerformed(ActionEvent e) {
+				  System.out.println("Save program");
+			  }
+		});
+		loadP.addActionListener(new ActionListener() {
+			  public void actionPerformed(ActionEvent e) {
+				  System.out.println("Load program");
+			  }
+		});
+		controlPanel.add(newP);
+		controlPanel.add(saveP);
+		controlPanel.add(loadP);
+		
+		// Container to hold both
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
 		cp.add(canvas, BorderLayout.CENTER);
+		cp.add(controlPanel, BorderLayout.NORTH);
+		
+		// Create the universe!
 		SimpleUniverse universe = new SimpleUniverse(canvas);
 
 		// Add mouse control over the camera
