@@ -24,13 +24,17 @@ public class KeyHandler implements KeyListener {
 			if(key.getKeyCode() > 36 && key.getKeyCode() < 41){
 				grid.moveBox(key.getKeyCode());
 			}else{
-				if(key.getKeyChar() == '\b'){//backspace
+				if(key.getKeyChar() == '\b'){
+					// Backspace
 					grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z] = (char)0;
-				}else if(key.getKeyCode() == 13){//enter:step the board
-					//to be implemented later
-				}else if(key.getKeyCode() == 27){//escape: reset
-					//to be implemented later
-				}else{//write to the board
+				}else if(key.getKeyCode() == 13){
+					// Enter:step the board
+					// TODO
+				}else if(key.getKeyCode() == 27){
+					// Escape: reset
+					// TODO
+				}else{
+					// Write to the board
 					grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z] = key.getKeyChar();
 				}
 			}

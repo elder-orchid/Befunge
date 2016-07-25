@@ -5,48 +5,44 @@ import javax.media.j3d.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 
 // This class is the main handler for screen content
 @SuppressWarnings("serial")
 public class Screen extends JFrame {
 	ProgramGrid progGrid;
+	FileFilter bfFilter = new FileFilter() {
+		public String getDescription() {
+			return "3D Befunge Files (*.bf3)";
+		}
+		public boolean accept(File f) {
+			if (f.isDirectory()) {
+				return true;
+			} else {
+				String filename = f.getName().toLowerCase();
+				return filename.endsWith(".bf3");
+			}
+		}
+	};
+
+
 	public Screen() {
 		// Config
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-		
+
 		// Canvas for 3d stuff
 		Canvas3D canvas = new Canvas3D(config);
-		
-		// Panel/gui
-		JPanel controlPanel = new JPanel(new FlowLayout());
-		JButton newP = new JButton("New Program"), saveP = new JButton("Save Program"), loadP = new JButton("Load Program");
-		newP.addActionListener(new ActionListener() {
-			  public void actionPerformed(ActionEvent e) {
-				  System.out.println("New program");
-			  }
-		});
-		saveP.addActionListener(new ActionListener() {
-			  public void actionPerformed(ActionEvent e) {
-				  System.out.println("Save program");
-			  }
-		});
-		loadP.addActionListener(new ActionListener() {
-			  public void actionPerformed(ActionEvent e) {
-				  System.out.println("Load program");
-			  }
-		});
-		controlPanel.add(newP);
-		controlPanel.add(saveP);
-		controlPanel.add(loadP);
-		
-		// Container to hold both
-		Container cp = getContentPane();
-		cp.setLayout(new BorderLayout());
-		cp.add(canvas, BorderLayout.CENTER);
-		cp.add(controlPanel, BorderLayout.NORTH);
-		
+
 		// Create the universe!
 		SimpleUniverse universe = new SimpleUniverse(canvas);
 
@@ -65,6 +61,38 @@ public class Screen extends JFrame {
 		// Input is to specify line width in pixels
 		BranchGroup scene = progGrid.getBranchGroup(5);
 		universe.addBranchGraph(scene);
+
+		// Panel/gui
+		JPanel controlPanel = new JPanel(new FlowLayout());
+		JButton newP = new JButton("New Program"), saveP = new JButton("Save Program"), loadP = new JButton("Load Program");
+		newP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("New program");
+				//Discard current board string
+				progGrid.b.board = new char[progGrid.b.board.length][progGrid.b.board[0].length][progGrid.b.board[0][0].length];
+			}
+		});
+		saveP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Save program");
+				save();
+			}
+		});
+		loadP.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Load program");
+				open();
+			}
+		});
+		controlPanel.add(newP);
+		controlPanel.add(saveP);
+		controlPanel.add(loadP);
+
+		// Container to hold both
+		Container cp = getContentPane();
+		cp.setLayout(new BorderLayout());
+		cp.add(canvas, BorderLayout.CENTER);
+		cp.add(controlPanel, BorderLayout.NORTH);
 
 		// Configure this JFrame
 		setSize(500, 500);
@@ -86,4 +114,32 @@ public class Screen extends JFrame {
 			}
 		});
 	}
+
+	// File related tom-foolery
+	public void open() {
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileFilter(bfFilter);
+		if (fileChooser.showOpenDialog(Screen.this) == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			// Load from file
+			try {
+				String contents = new String(Files.readAllBytes(file.toPath()));
+				// TODO convert output into 3d char array
+			} catch (IOException e) {}
+		}
+	}
+
+	public void save() {
+		System.out.println(progGrid.b.toString());
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileFilter(bfFilter);
+		if (fileChooser.showSaveDialog(Screen.this) == JFileChooser.APPROVE_OPTION) {
+			File file = fileChooser.getSelectedFile();
+			// save to file
+			try(PrintWriter out = new PrintWriter(file)){
+				out.println(progGrid.b.toString());
+			} catch(Exception e) {}
+		}
+	}
+
 }
