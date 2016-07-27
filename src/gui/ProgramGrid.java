@@ -1,11 +1,18 @@
 package gui;
+import java.awt.Font;
+
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.Font3D;
+import javax.media.j3d.FontExtrusion;
+import javax.media.j3d.Geometry;
 import javax.media.j3d.LineArray;
 import javax.media.j3d.LineAttributes;
+import javax.media.j3d.Material;
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Shape3D;
+import javax.media.j3d.Text3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.TransparencyAttributes;
@@ -26,7 +33,7 @@ public class ProgramGrid {
 	String program;
 	Point3d boxLoc = new Point3d(0, 0, 0);
 	TransformGroup transformGroup = new TransformGroup();
-	 Transform3D transform = new Transform3D();
+	Transform3D transform = new Transform3D();
 	// Although only one string is used for input, it can be broken down based on the other dimensions.
 	
 	public ProgramGrid(int xdim, int ydim, int zdim, float sidelength, String program) {
@@ -227,6 +234,23 @@ public class ProgramGrid {
 		rootGroup.compile();
 
 		return rootGroup;
+	}
+	
+	public void drawText(char c, int x, int y, int z) {
+		//TEXT TEST
+	    Color3f white = new Color3f(1.0f, 1.0f, 1.0f);
+		Material m = new Material(white, white, white, white, 100.0f);
+	    Appearance a = new Appearance();
+	    m.setLightingEnable(true);
+	    a.setMaterial(m);
+	    Font3D f3d = new Font3D(new Font("TimesRoman", Font.PLAIN, 1), new FontExtrusion());
+
+	    Text3D text3D = new Text3D(f3d, new String(c+""), new Point3f(x, y, z));
+	    text3D.setCapability(Geometry.ALLOW_INTERSECT);
+	    Shape3D s3D1 = new Shape3D();
+	    s3D1.setGeometry(text3D);
+	    s3D1.setAppearance(a);
+	    transformGroup.addChild(s3D1);
 	}
 
 }
