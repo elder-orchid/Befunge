@@ -5,15 +5,10 @@ import javax.media.j3d.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 
@@ -123,6 +118,7 @@ public class Screen extends JFrame {
 			File file = fileChooser.getSelectedFile();
 			// Load from file
 			try {
+				@SuppressWarnings("unused")
 				String contents = new String(Files.readAllBytes(file.toPath()));
 				// TODO convert output into 3d char array
 			} catch (IOException e) {}
