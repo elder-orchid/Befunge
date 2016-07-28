@@ -33,11 +33,14 @@ public class ProgramGrid {
 	String program;
 	Point3d boxLoc = new Point3d(0, 0, 0);
 	TransformGroup transformGroup = new TransformGroup();
+	
 	Transform3D transform = new Transform3D();
+	Text3D[][][] letters;
 	// Although only one string is used for input, it can be broken down based on the other dimensions.
 	
 	public ProgramGrid(int xdim, int ydim, int zdim, float sidelength, String program) {
 		this.b = new Board(new int[] {xdim, ydim, zdim});
+		this.letters = new Text3D[xdim][ydim][zdim];
 		this.sidelength = sidelength;
 		this.program = program;
 	}
@@ -96,6 +99,7 @@ public class ProgramGrid {
 
 		// Initialize the transform group
 		transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		
 		//Set up color
 		ColoringAttributes ca = new ColoringAttributes(color, ColoringAttributes.NICEST);
 		
@@ -174,7 +178,7 @@ public class ProgramGrid {
 
 	public BranchGroup getBranchGroup(int linewidth) {
 		// Create the root node of the content branch
-		BranchGroup rootGroup = new BranchGroup(), lineGroup = new BranchGroup(), boxGroup = new BranchGroup();
+		BranchGroup rootGroup = new BranchGroup(), lineGroup = new BranchGroup(), boxGroup = new BranchGroup(), letterGroup = new BranchGroup();
 
 		// Render as a wireframe
 		Appearance ap = new Appearance();
@@ -226,9 +230,18 @@ public class ProgramGrid {
 		// 0,0,0 is the farthest bottom left corner
 		boxGroup.addChild(highlightBox((int)boxLoc.x, (int)boxLoc.y, (int)boxLoc.z, 0.5f, new Color3f(0.8f, 0.0f, 0.8f)));
 		
+		for(int x = 0; x < b.board.length; x++) {
+	    	for(int y = 0; y < b.board[0].length; y++) {
+	    		for(int z = 0; z < b.board[0][0].length; z++) {
+	    			letterGroup.addChild(drawText(x, y, z));
+	    		}
+	    	}
+	    }
+		
 		// Add the subgroups
 		rootGroup.addChild(lineGroup);
 		rootGroup.addChild(boxGroup);
+		rootGroup.addChild(letterGroup);
 		
 		// Compile to perform optimizations on this content branch.
 		rootGroup.compile();
@@ -236,8 +249,8 @@ public class ProgramGrid {
 		return rootGroup;
 	}
 	
-	public void drawText(char c, int x, int y, int z) {
-		//TEXT TEST
+	public Shape3D drawText(int x, int y, int z) {
+		// Initialize the appearance related variables
 	    Color3f white = new Color3f(1.0f, 1.0f, 1.0f);
 		Material m = new Material(white, white, white, white, 100.0f);
 	    Appearance a = new Appearance();
@@ -245,12 +258,12 @@ public class ProgramGrid {
 	    a.setMaterial(m);
 	    Font3D f3d = new Font3D(new Font("TimesRoman", Font.PLAIN, 1), new FontExtrusion());
 
-	    Text3D text3D = new Text3D(f3d, new String(c+""), new Point3f(x, y, z));
-	    text3D.setCapability(Geometry.ALLOW_INTERSECT);
-	    Shape3D s3D1 = new Shape3D();
-	    s3D1.setGeometry(text3D);
-	    s3D1.setAppearance(a);
-	    transformGroup.addChild(s3D1);
+	    // Initialize each shape and text
+	    letters[x][y][z] = new Text3D(f3d, b.board[x][y][z]+"", new Point3f(0,0,0));
+	    letters[x][y][z].setCapability(Geometry.ALLOW_INTERSECT | Text3D.ALLOW_STRING_READ | Text3D.ALLOW_STRING_WRITE);
+		Shape3D shape = new Shape3D();
+		shape.setGeometry(letters[x][y][z]);
+		shape.setAppearance(a);
+		return shape;
 	}
-
 }

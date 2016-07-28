@@ -35,8 +35,8 @@ public class KeyHandler implements KeyListener {
 				}else{
 					// Write to the board
 					grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z] = key.getKeyChar();
-					// Display the character
-					//ProgramGrid.drawText('a', 0, 0, 0);
+					grid.letters[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z].setString(
+					grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z]+"");
 				}
 			}
 		}

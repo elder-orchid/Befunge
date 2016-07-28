@@ -59,7 +59,7 @@ public class Board {
 	// TODO make a method that prevents this repetition
 	public Board(int[] bounds) {
 		this.board = new char[bounds[0]][bounds[1]][bounds[2]];
-
+		this.board[0][0][0] = 'f';
 		this.dir = Direction.Right;
 		this.pos = new int[] {0,0,0};
 		this.stackIndex = 0;
@@ -71,7 +71,7 @@ public class Board {
 
 	public Board(int[] bounds, int stacksize) {
 		this.board = new char[bounds[0]][bounds[1]][bounds[2]];
-
+		this.board[0][0][0] = 'f';
 		this.dir = Direction.Right;
 		this.pos = new int[] {0,0,0};
 		this.stackIndex = 0;
