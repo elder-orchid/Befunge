@@ -53,7 +53,6 @@ public class ProgramGrid {
 		LineArray lineArray = new LineArray(2,LineArray.COORDINATES | LineArray.COLOR_3);
 		LineAttributes lineAttributes = new LineAttributes(linewidth, LineAttributes.PATTERN_SOLID, true);
 		a.setLineAttributes(lineAttributes);
-		//lineArray.setCapability(GeometryArray.ALLOW_COLOR_WRITE);
 		Point3f[] p = new Point3f[2];
 		switch(plane){
 		case 0:

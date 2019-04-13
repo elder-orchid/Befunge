@@ -3,7 +3,7 @@ package interp;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class Stack<Integer> extends ArrayList<Integer> {
+public class Stack extends ArrayList<Integer> {
 
 	public int pop() throws StackErrorException {
 		if(size() > 0) {

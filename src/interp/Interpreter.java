@@ -6,68 +6,84 @@ import java.io.*;
 
 public class Interpreter {
 	enum Direction {
-		UP, DOWN, RIGHT, LEFT
+		UP, DOWN, RIGHT, LEFT, IN, OUT
 	};
 	
 	public static void main(String[] args) throws InterruptedException, StackErrorException{
 
-		Stack<Integer> stack = new Stack<Integer>();
-		ArrayList<ArrayList<Character>> input = new ArrayList<ArrayList<Character>>();
+		Stack stack = new Stack();
+		bf3 input = new bf3();
 
-		Scanner scan = null;
+		Scanner fileReader = null, userInput = null;
 		try {
-			scan = new Scanner(new File("src/program.bf"));
-			
-			while (scan.hasNextLine()) {
-				String line = scan.nextLine();
-				ArrayList<Character> row = new ArrayList<Character>();
-				for(char c : line.toCharArray()) {
-					row.add(c);
+			fileReader = new Scanner(new File("src/program.bf3"));
+			int page = -1;
+			while (fileReader.hasNextLine()) {
+				String line = fileReader.nextLine();
+				if(line.equals("/page")) {
+					input.add(new ArrayList<ArrayList<Character>>());
+					page++;
 				}
-				//System.out.println(row);
-				input.add(row);
+				else {
+					ArrayList<Character> row = new ArrayList<Character>();
+					for(char c : line.toCharArray()) {
+						row.add(c);
+					}
+					input.get(page).add(row);
+				}
 			}
-			scan.close();
+			fileReader.close();
 		}
 		catch (FileNotFoundException e) {
 			System.out.println("Please add a file");
 		}
-
 		
+		//System.out.println(input);
 		
+		userInput = new Scanner(System.in);
 		Direction direction = Direction.RIGHT;
 		boolean stringmode = false;
 		
-		int x = 0, y = 0; 
-		int a, b, v, xS, yS;
+		int x = 0, y = 0, z = 0; 
+		int a, b, v, xS, yS, zS;
+		char cmd;
 		outerloop:
 		for(;;) {
+			z %= input.size();
+			y %= input.get(0).size();
+			x %= input.get(0).get(0).size();
 			
-			y %= input.size();
-			x %= input.get(0).size();
+			if(z < 0) {
+				z += input.size();
+			}
 			if(y < 0) {
-				y += input.size();
+				y += input.get(0).size();
 			}
 			if(x < 0) {
-				x += input.get(0).size();
+				x += input.get(0).get(0).size();
 			}
-			//System.out.println("Current stack:" + stack.toString());
-			//System.out.println("Command: " + input.get(y).get(x) );
-			//Thread.sleep(100);
+			cmd = input.get(z).get(y).get(x);
+			
+//			System.out.println(z + ":" + y + ":" + x);
+//			System.out.println("Current stack:" + stack.toString());
+//			System.out.println("Command: " + cmd);
+//			Thread.sleep(100);
 			
 			if(stringmode) {
-				if(input.get(y).get(x) == '"') {
+				if(cmd == '"') {
 					stringmode ^= true;
 				}
 				else {
-					stack.push((int)input.get(y).get(x));	
+					stack.push((int)cmd);	
 				}
 			}
-			else if (Character.isDigit(input.get(y).get(x))) {
-				stack.push(Integer.parseInt(input.get(y).get(x)+""));
+			else if (Character.isDigit(cmd)) {
+				stack.push(Integer.parseInt(cmd+""));
 			}
 			else {
-				switch (input.get(y).get(x)) {
+				switch (cmd) {
+				case ' ':
+					break;
 				case '+':
 					a = stack.pop();
 					b = stack.pop();
@@ -125,6 +141,14 @@ public class Interpreter {
 				case '<':
 					direction = Direction.LEFT;
 					break;
+				
+				case 'o':
+					direction = Direction.OUT;
+					break;
+					
+				case 'x':
+					direction = Direction.IN;
+					break;
 					
 				case '?':
 					int random = (int)(Math.random() * 4);
@@ -139,7 +163,7 @@ public class Interpreter {
 					direction = (a == 0) ? Direction.DOWN : Direction.UP;
 					break;
 					
-				case '"':
+				case '\"':
 					stringmode ^= true;
 					break;
 					
@@ -177,6 +201,10 @@ public class Interpreter {
 					case RIGHT:
 						x++;
 						break;
+					case IN:
+						break;
+					case OUT:
+						break;
 					}
 					break;
 					
@@ -187,7 +215,7 @@ public class Interpreter {
 					yS = stack.pop();
 					xS = stack.pop();
 					try {
-						stack.push((int)input.get(yS).get(xS));
+						stack.push((int)input.get(z).get(yS).get(xS));
 					}
 					catch(IndexOutOfBoundsException e) {
 						stack.push(0);
@@ -198,8 +226,19 @@ public class Interpreter {
 					yS = stack.pop();
 					xS = stack.pop();
 					v = stack.pop();
-					//System.out.println("x: " + a + ", y: " + b + ", v: " + v);
-					input.get(yS).set(xS, (char)v);
+					//System.out.println("z: " + z + ", y: " + yS + ", x: " + xS + ", v: " + v);
+					//input.get(z).get(yS).set(xS, (char)v);
+					input.pset(z, yS, xS, (char)v);
+					break;
+					
+				case '&':
+					System.out.println("(Please input a single int)");
+					stack.push(userInput.nextInt());
+					break;
+					
+				case '~':
+					System.out.println("(Please input a single char)");
+					stack.push((int)userInput.nextLine().charAt(0));
 					break;
 				}
 			}
@@ -217,7 +256,14 @@ public class Interpreter {
 			case RIGHT:
 				x++;
 				break;
+			case OUT:
+				z--;
+				break;
+			case IN:
+				z++;
+				break;
 			}
 		}
+		userInput.close();
 	}
 }

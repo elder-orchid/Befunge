@@ -30,7 +30,7 @@ public class Screen extends JFrame {
 		}
 	};
 
-	public Screen() {
+	public Screen(int x, int y, int z) {
 		// Config
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 
@@ -49,7 +49,7 @@ public class Screen extends JFrame {
 		universe.getViewingPlatform().setNominalViewingTransform();
 
 		// Create and set up the Program Grid
-		progGrid = new ProgramGrid(3, 3, 3, 0.2f, "A");
+		progGrid = new ProgramGrid(x, y, z, 0.2f, "A");
 
 		// Get the content branch from the Program Grid and add it to the universe
 		// Input is to specify line width in pixels
@@ -90,7 +90,7 @@ public class Screen extends JFrame {
 
 		// Configure this JFrame
 		setSize(500, 500);
-		setTitle("BEFUNGE");
+		setTitle("BEFUNG3D");
 		setVisible(true);
 
 		// Add key listener
@@ -104,7 +104,7 @@ public class Screen extends JFrame {
 	public static void main(String args[]) {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				new Screen();
+				new Screen(3, 4, 5);
 			}
 		});
 	}
