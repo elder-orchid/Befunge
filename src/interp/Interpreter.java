@@ -9,9 +9,9 @@ public class Interpreter {
 		UP, DOWN, RIGHT, LEFT
 	};
 	
-	public static void main(String[] args) throws InterruptedException{
+	public static void main(String[] args) throws InterruptedException, StackErrorException{
 
-		ArrayList<Integer> stack = new ArrayList<Integer>();
+		Stack<Integer> stack = new Stack<Integer>();
 		ArrayList<ArrayList<Character>> input = new ArrayList<ArrayList<Character>>();
 
 		Scanner scan = null;
@@ -24,6 +24,7 @@ public class Interpreter {
 				for(char c : line.toCharArray()) {
 					row.add(c);
 				}
+				//System.out.println(row);
 				input.add(row);
 			}
 			scan.close();
@@ -38,70 +39,103 @@ public class Interpreter {
 		boolean stringmode = false;
 		
 		int x = 0, y = 0; 
-		int a, b, v;
+		int a, b, v, xS, yS;
 		outerloop:
 		for(;;) {
+			
+			y %= input.size();
+			x %= input.get(0).size();
+			if(y < 0) {
+				y += input.size();
+			}
+			if(x < 0) {
+				x += input.get(0).size();
+			}
+			//System.out.println("Current stack:" + stack.toString());
+			//System.out.println("Command: " + input.get(y).get(x) );
+			//Thread.sleep(100);
 			
 			if(stringmode) {
 				if(input.get(y).get(x) == '"') {
 					stringmode ^= true;
 				}
 				else {
-					stack.add((int)input.get(y).get(x));	
+					stack.push((int)input.get(y).get(x));	
 				}
+			}
+			else if (Character.isDigit(input.get(y).get(x))) {
+				stack.push(Integer.parseInt(input.get(y).get(x)+""));
 			}
 			else {
 				switch (input.get(y).get(x)) {
 				case '+':
-					a = stack.remove(stack.size()-1);
-					b = stack.remove(stack.size()-1);
-					stack.add(a + b);
+					a = stack.pop();
+					b = stack.pop();
+					stack.push(a + b);
 					break;
 					
 				case '-':	
-					a = stack.remove(stack.size()-1);
-					b = stack.remove(stack.size()-1);
-					stack.add(a - b);
+					a = stack.pop();
+					b = stack.pop();
+					stack.push(b - a);
 					break;
 					
 				case '*': 
-					a = stack.remove(stack.size()-1);
-					b = stack.remove(stack.size()-1);
-					stack.add(a * b);
+					a = stack.pop();
+					b = stack.pop();
+					stack.push(a * b);
 					break;
 					
 				case '/':	
-					a = stack.remove(stack.size()-1);
-					b = stack.remove(stack.size()-1);
-					stack.add(a / b);
+					a = stack.pop();
+					b = stack.pop();
+					stack.push((int)Math.floor(b / a));
 					break;
 					
 				case '%':	
-					a = stack.remove(stack.size()-1);
-					b = stack.remove(stack.size()-1);
-					stack.add(a % b);
+					a = stack.pop();
+					b = stack.pop();
+					stack.push(b % a);
+					break;
+					
+				case '!':
+					//Pop a value. If the value is zero, push 1; otherwise, push zero.
+					a = stack.pop();
+					stack.push(a == 0 ? 1 : 0);
 					break;
 					
 				case '`':	
-					a = stack.remove(stack.size()-1);
-					b = stack.remove(stack.size()-1);
-					stack.add((b > a) ? 1 : 0);
+					a = stack.pop();
+					b = stack.pop();
+					stack.push((b > a) ? 1 : 0);
 					break;
+					
+				case 'v':
+					direction = Direction.DOWN;
+					break;
+					
+				case '^':
+					direction = Direction.UP;
+					break;
+					
+				case '>':
+					direction = Direction.RIGHT;
+					break;
+					
+				case '<':
+					direction = Direction.LEFT;
+					break;
+					
 				case '?':
 					int random = (int)(Math.random() * 4);
 					direction = Direction.values()[random];
 				case '_':
-					if(stack.size() == 0 ) {
-						direction = Direction.RIGHT;
-					}
-					else {
-						a = stack.remove(stack.size()-1);
-						direction = (a == 0) ? Direction.RIGHT : Direction.LEFT;
-					}
+					a = stack.pop();
+					direction = (a == 0) ? Direction.RIGHT : Direction.LEFT;
 					break;
 					
 				case '|':
-					a = stack.remove(stack.size()-1);
+					a = stack.pop();
 					direction = (a == 0) ? Direction.DOWN : Direction.UP;
 					break;
 					
@@ -110,25 +144,23 @@ public class Interpreter {
 					break;
 					
 				case ':':
-					if(stack.size() != 0 ) { 
-						stack.add(stack.get(stack.size()-1));
-					}
+					stack.duplicate();
 					break;
 					
 				case '\\':
-					//TODO
+					stack.swap();
 					break;
 					
 				case '$':
-					stack.remove(stack.size()-1);
+					stack.pop();
 					break;
 					
 				case '.':
-					System.out.print(stack.remove(stack.size()-1));
+					System.out.print(stack.pop());
 					break;
 					
 				case ',':
-					System.out.print((char)(int)stack.remove(stack.size()-1));
+					System.out.print((char)(int)stack.pop());
 					break;
 					
 				case '#':
@@ -152,34 +184,22 @@ public class Interpreter {
 					break outerloop;
 					
 				case 'g':
-					a = stack.remove(stack.size()-1);
-					b = stack.remove(stack.size()-1);
-					stack.add((int)input.get(a).get(b));
+					yS = stack.pop();
+					xS = stack.pop();
+					try {
+						stack.push((int)input.get(yS).get(xS));
+					}
+					catch(IndexOutOfBoundsException e) {
+						stack.push(0);
+					}
 					break;
 					
 				case 'p':
-					a = stack.remove(stack.size()-1);
-					b = stack.remove(stack.size()-1);
-					v = stack.remove(stack.size()-1);
-					ArrayList<Character> row = input.get(y);
-					row.set(x, (char)v);
-					input.set(y, row);
-					break;
-					
-				case 'v':
-					direction = Direction.DOWN;
-					break;
-					
-				case '^':
-					direction = Direction.UP;
-					break;
-					
-				case '>':
-					direction = Direction.RIGHT;
-					break;
-					
-				case '<':
-					direction = Direction.LEFT;
+					yS = stack.pop();
+					xS = stack.pop();
+					v = stack.pop();
+					//System.out.println("x: " + a + ", y: " + b + ", v: " + v);
+					input.get(yS).set(xS, (char)v);
 					break;
 				}
 			}

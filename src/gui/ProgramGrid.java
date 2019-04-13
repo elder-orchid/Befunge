@@ -79,6 +79,7 @@ public class ProgramGrid {
 			p[1] = new Point3f(pos1 * sidelength - sidelength * b.board.length / 2, sidelength * (float)b.board[0].length - sidelength * b.board[0].length / 2, pos2 * sidelength - sidelength * b.board[0][0].length / 2);
 			break;
 		}
+		
 		lineArray.setCoordinates(0, p);
 		
 		//colors

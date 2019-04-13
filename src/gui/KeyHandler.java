@@ -4,11 +4,11 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 	ProgramGrid grid;
-	
+
 	public KeyHandler(ProgramGrid grid) {
 		this.grid = grid;
 	}
-	
+
 	@Override
 	public void keyPressed(KeyEvent key) {
 		if(key.isControlDown()) {
@@ -36,7 +36,7 @@ public class KeyHandler implements KeyListener {
 					// Write to the board
 					grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z] = key.getKeyChar();
 					grid.letters[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z].setString(
-					grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z]+"");
+							grid.b.board[(int) grid.boxLoc.x][(int) grid.boxLoc.y][(int) grid.boxLoc.z]+"");
 				}
 			}
 		}
@@ -44,13 +44,13 @@ public class KeyHandler implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent key) {
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

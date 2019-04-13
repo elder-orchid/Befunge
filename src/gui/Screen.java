@@ -30,7 +30,6 @@ public class Screen extends JFrame {
 		}
 	};
 
-
 	public Screen() {
 		// Config
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
