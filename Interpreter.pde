@@ -13,9 +13,16 @@ public class Interpreter {
   private char cmd;
   private Stack stack = new Stack();
   private bf3 input = new bf3();
-  private Scanner userInput = new Scanner(System.in), fileReader;
+  private Scanner userInput = new Scanner(System.in);
   private Direction direction = Direction.RIGHT;
-  boolean stringmode = false;
+  private boolean stringmode = false;
+  private String fileName;
+  private boolean debug = false;
+  
+  Interpreter(String fileName_, boolean debug_) {
+    fileName = fileName_;
+    debug = debug_;
+  }
   
   
   public void run() throws InterruptedException{
@@ -26,7 +33,7 @@ public class Interpreter {
     userInput.close();
   }
   
-  public void loadFile(String fileName) {
+  public int[] loadFile() {
     
     //fileReader = new Scanner(new File("src/program.bf3"));
     int page = -1;
@@ -44,6 +51,11 @@ public class Interpreter {
         input.get(page).add(row);
       }
     }
+    return input.getDimensions();
+  }
+  
+  public char getChar(int x, int y, int z) {
+    return input.get(z).get(y).get(x);
   }
   
   public boolean step() {
@@ -62,10 +74,12 @@ public class Interpreter {
     }
     cmd = input.get(z).get(y).get(x);
     
-//    System.out.println(z + ":" + y + ":" + x);
-//    System.out.println("Current stack:" + stack.toString());
-//    System.out.println("Command: " + cmd);
-//    Thread.sleep(100);
+    if(debug) {
+      System.out.println(z + ":" + y + ":" + x);
+      System.out.println("Current stack:" + stack.toString());
+      System.out.println("Command: " + cmd);
+      delay(100);
+    }
     
     if(stringmode) {
       if(cmd == '"') {

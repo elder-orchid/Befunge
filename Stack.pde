@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Stack extends ArrayList<Integer> {
-
+  
   public int pop() {
     if(size() > 0) {
       return (int)remove(size()-1);
