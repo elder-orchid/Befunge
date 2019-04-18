@@ -8,17 +8,17 @@ enum Direction {
   
 public class Interpreter {
   
-  private int x = 0, y = 0, z = 0; 
+  int x = 0, y = 0, z = 0; 
   private int a, b, v, xS, yS, zS;
   private char cmd;
-  private Stack stack = new Stack();
+  public Stack stack = new Stack();
   private bf3 input = new bf3();
   private Scanner userInput = new Scanner(System.in);
   private Direction direction = Direction.RIGHT;
   private boolean stringmode = false;
   private String fileName;
   private boolean debug = false;
-  
+  private boolean exit;
   Interpreter(String fileName_, boolean debug_) {
     fileName = fileName_;
     debug = debug_;
@@ -26,13 +26,18 @@ public class Interpreter {
   
   
   public void run() throws InterruptedException{
-    boolean exit = false;
+    reset();
+    exit = false;
     while(!exit) {
       exit = step();
     }
     userInput.close();
   }
   
+  public void stop() {
+    exit = true;
+    crawl = false;
+  }
   public int[] loadFile() {
     
     //fileReader = new Scanner(new File("src/program.bf3"));
@@ -55,7 +60,16 @@ public class Interpreter {
   }
   
   public char getChar(int x, int y, int z) {
-    return input.get(z).get(y).get(x);
+    return input.get(z, y, x);
+  }
+  
+  public void reset() {
+    x = 0;
+    y = 0;
+    z = 0;
+    stack.clear();
+    output = "";
+    crawl = false;
   }
   
   public boolean step() {
@@ -192,11 +206,11 @@ public class Interpreter {
         break;
         
       case '.':
-        System.out.print(stack.pop());
+        output += stack.pop();
         break;
         
       case ',':
-        System.out.print((char)(int)stack.pop());
+        output += (char)(int)stack.pop();
         break;
         
       case '#':
@@ -221,6 +235,8 @@ public class Interpreter {
         break;
         
       case '@':
+        String[] lines = split(output, '\n');
+        saveStrings("output.txt", lines);
         return true;
         
       case 'g':

@@ -8,6 +8,11 @@ public class bf3 extends ArrayList<ArrayList<ArrayList<Character>>> {
   }
   
   public void pset(int z, int y, int x, char in) {
+    get(z,y,x);
+    get(z).get(y).set(x, in);
+  }
+  
+  public char get(int z, int y, int x) {
     while(z > size()-1) {
       add(new ArrayList<ArrayList<Character>>());
     }
@@ -18,7 +23,7 @@ public class bf3 extends ArrayList<ArrayList<ArrayList<Character>>> {
       get(z).get(y).add(' ');
     }
     
-    get(z).get(y).set(x, in);
+    return get(z).get(y).get(x);
   }
 
 }
